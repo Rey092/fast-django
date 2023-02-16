@@ -1,0 +1,1 @@
+"""Video tags test module."""
