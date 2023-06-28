@@ -1,0 +1,46 @@
+version: "3.3"
+
+volumes:
+  local_postgres_data:
+  static_volume:
+
+services:
+  nginx:
+    build:
+      context: ./deploy/nginx
+      dockerfile: dev.Dockerfile
+    ports:
+      - "8011:80"
+    volumes:
+      - static_volume:/usr/src/app/static
+    restart: "on-failure"
+
+  backend: &backend
+    volumes:
+      - static_volume:/usr/src/app/static
+    command: poetry run make run-dev
+    restart: always
+
+  celery:
+    volumes:
+      - static_volume:/usr/src/app/static
+
+  socketio:
+    ports:
+      - "127.0.0.1:5556:8001"
+
+  tg_subscriber:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    volumes:
+      - static_volume:/usr/src/app/static
+    container_name: backend_tg_subscriber
+    depends_on:
+      - backend
+      - postgres_db
+      - redis
+    env_file:
+      - .env
+    command: poetry run make bot
+    restart: always

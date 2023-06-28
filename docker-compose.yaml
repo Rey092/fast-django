@@ -1,0 +1,74 @@
+version: "3.3"
+
+volumes:
+  local_postgres_data:
+  static_volume:
+  media_volume:
+
+services:
+  postgres_db:
+    build:
+      context: ./deploy/postgres
+      dockerfile: Dockerfile
+    container_name: backend_postgres_db
+    volumes:
+      - ./deploy/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - local_postgres_data:/var/lib/postgresql/data:Z
+    env_file:
+      - .env
+    restart: always
+
+  nginx:
+    container_name: backend_nginx
+    depends_on:
+      - backend
+    restart: "on-failure"
+
+  backend: &backend
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    container_name: backend_backend
+    depends_on:
+      - postgres_db
+      - redis
+    env_file:
+      - .env
+    restart: always
+
+  redis:
+    image: redis:6.2.6
+    container_name: backend_redis
+
+  celery:
+    <<: *backend
+    container_name: backend_celery
+    depends_on:
+      - backend
+      - postgres_db
+      - redis
+    command: poetry run make worker
+    restart: always
+
+  beat:
+    <<: *backend
+    container_name: backend_beat
+    depends_on:
+      - backend
+      - postgres_db
+      - redis
+    command: poetry run make beat
+    restart: always
+
+  socketio:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    container_name: backend_socketio
+    depends_on:
+      - backend
+      - postgres_db
+      - redis
+    env_file:
+      - .env
+    restart: always

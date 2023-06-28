@@ -1,0 +1,8 @@
+[flake8]
+max-line-length = 120
+exclude=.venv,venv,tests/*,src/*/migrations/*,.git,*migrations*, manage.py
+application-import-names=app
+import-order-style=google
+max-complexity=10
+ignore=I001,I002,I003,I004,I005,D200,D106,E203,W503
+inline-quotes="

@@ -1,0 +1,70 @@
+[tool.poetry]
+name = "project_name"
+version = "0.0.1"
+description = ""
+authors = ["Author Name"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+# web
+fastapi = "^0.92.0"  # core web framework on top of starlette
+uvicorn = "^0.20.0"  # ASGI server worker
+gunicorn = "^20.1.0"  # multi-process server for uvicorn workers
+python-multipart = "^0.0.6" # multipart/form-data parser for fastapi
+# orm
+Django = "^4.1.7" # django, mostly for admin, orm
+psycopg2-binary = "^2.9.5" # postgresql driver for django orm
+# core
+python = "^3.11" # python >= 3.11
+django-environ = "^0.9.0" # env variables
+django-extensions = "^3.2.1" # django extensions
+dependency-injector = "^4.41.0" # dependency injections for service-oriented architecture
+# schemas
+pydantic = "^1.10.5"  # core schema library
+django-ninja = "^0.21.0"  # use for django models serialization to pydantic models
+pyhumps = "^3.8.0" # convert snake_case to camelCase
+rstr = "^3.2.0" # random string generator from regex
+pydantic-factories = "^1.17.3" # pydantic factories for testing
+# services
+redis = "^4.5.1" # redis library with async support
+aiogram = "^2.25.1" # telegram bot framework. by default used for logging
+# throttling
+fastapi-limiter = "^0.1.5" # throttling library for fastapi on top of redis
+# logging
+loguru = "^0.6.0" # logging library
+# third-party
+httpx = "^0.23.3"  # async http client
+# caching
+async-lru = "^1.0.3" # async lru cache for async functions
+# validation
+email-validator = "^1.3.1" # email validator
+# encryption
+pyjwt = "^2.6.0" # jwt library
+passlib = "^1.7.4" # password hashing
+# images
+pillow = "^9.5.0" # image processing
+# static files
+whitenoise = "^6.3.0" # static files serving library for django admin. disable it if you don't need it
+# pytest
+pytest-django = "^4.5.2" # django testing
+pytest-asyncio = "^0.20.3" # for testing
+nest-asyncio = "^1.5.6" # for testing
+trio = "^0.22.0" # async library
+asgi-lifespan = "^2.0.0" # for testing
+# celery
+celery = "^5.2.7"
+django-celery-beat = "^2.5.0"
+# WITHOUT TAGS
+python-socketio = "^5.8.0"
+django-cleanup = "^7.0.0"
+django-redis = "^5.2.0"
+
+[tool.poetry.group.dev.dependencies]
+locust = "^2.14.2"  # load testing
+flake8 = "^6.0.0"  # linter
+flake8-isort = "^6.0.0" # linter
+flake8-docstrings = "^1.7.0" # linter
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

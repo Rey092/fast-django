@@ -1,0 +1,67 @@
+repos:
+  # iSort https://pycqa.github.io/isort/
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        args:
+          - --trailing-comma
+          - --use-parentheses
+          - --balanced
+          - --py=38
+          - --profile=black
+          - -l=120
+
+  # Black https://black.readthedocs.io/en/stable/
+  - repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+      - id: black
+        args:
+          - --target-version=py38
+          - --line-length=120
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: debug-statements
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: fix-encoding-pragma
+      - id: forbid-new-submodules
+      - id: pretty-format-json
+        args:
+          - --autofix
+          - --indent=4
+          - --no-ensure-ascii
+          - --no-sort-keys
+      - id: requirements-txt-fixer
+      - id: trailing-whitespace
+        args: [ --markdown-linebreak-ext=md ]  # Preserve Markdown hard linebreaks
+
+  - repo: https://github.com/pycqa/flake8
+    rev: '6.0.0'
+    hooks:
+      - id: flake8
+        additional_dependencies: [
+          'flake8-docstrings==1.6.0',
+        ]
+        args:
+          - --max-line-length=120
+          - --ignore=D106,D200,W503,E203
+          - --exclude=venv,.git,*/migrations/*,settings.py,manage.py
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.991
+    hooks:
+      - id: mypy
+        exclude: "migrations"
+        additional_dependencies: ["git+https://github.com/typeddjango/django-stubs.git"]

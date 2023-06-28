@@ -1,0 +1,62 @@
+version: "3.3"
+
+services:
+  nginx:
+    build:
+      context: ./deploy/nginx
+      dockerfile: dev.Dockerfile
+    ports:
+      - "8011:80"
+    volumes:
+      - static_volume:/usr/src/app/static
+      - media_volume:/usr/src/app/media
+    restart: "on-failure"
+
+  backend: &backend
+    volumes:
+      - static_volume:/usr/src/app/static
+      - media_volume:/usr/src/app/media
+    command: poetry run make run-dev
+    restart: always
+
+  celery:
+    volumes:
+      - static_volume:/usr/src/app/static
+      - media_volume:/usr/src/app/media
+
+  socketio:
+    ports:
+      - "127.0.0.1:5556:8001"
+
+  tg_subscriber:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    volumes:
+      - static_volume:/usr/src/app/static
+      - media_volume:/usr/src/app/media
+    container_name: backend_tg_subscriber
+    depends_on:
+      - backend
+      - postgres_db
+      - redis
+    env_file:
+      - .env
+    command: poetry run make bot
+    restart: always
+
+  flower:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    container_name: backend_flower
+    ports:
+      - "5555:5555"
+    depends_on:
+      - backend
+      - postgres_db
+      - redis
+    env_file:
+      - .env
+    command: poetry run make flower-container
+    restart: always
