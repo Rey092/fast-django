@@ -1,0 +1,11 @@
+venv
+.idea
+*.pyc
+*.pyo
+*.pyd
+pycache
+__pycache__
+*.so
+.env
+staticfiles
+media
